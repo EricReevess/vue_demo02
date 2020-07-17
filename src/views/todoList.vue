@@ -20,6 +20,7 @@
         <List :todo-items="resultList" :show-number='false'>
           <span>无结果</span>
         </List>
+        <Counter />
       </div>
     </div>
   </transition>
@@ -29,10 +30,12 @@
   import addItem from './add-item'
   import List from './List'
   import localStorageUtils from "../Utils/LocalStorageUtils";
+  import Counter from './Counter'
 
   export default {
     name: 'todoList',
     components: {
+      Counter,
       'add-item': addItem,
       'List': List
     },

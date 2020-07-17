@@ -56,7 +56,7 @@ const routes = [
   },
 
 ]
-const mainPageRouter = new VueRouter({
+
+export default  new VueRouter({
   routes,
 })
-export default mainPageRouter
