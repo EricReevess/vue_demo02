@@ -1,35 +1,56 @@
 <template>
   <div class="todo-items">
 
-    <transition name="list">
-      <div v-if="localTodoItem.length === 0" class="empty-list">
-        <slot></slot>
-      </div>
-    </transition>
-
-    <div v-if="localTodoItem.length !== 0 && extentOption">
-      <button class="btn btn-danger" @click="itemClear">清空</button>
-      <button class="btn btn-info" @click="sortItems" disabled>排序</button>
-      <button class="btn btn-success" @click="itemDelete(selected)" :disabled="selected.length === 0">已完成</button>
+    <div v-if="extentOption">
+      <button class="btn btn-danger" @click="itemClear" :disabled="!todoList.length">清空</button>
+      <button class="btn btn-success" @click="itemDelete(selected)" :disabled="!selected.length">已完成</button>
     </div>
     <transition-group name="list" tag="ul" class="list list-group">
       <li
         class="list-group-item"
-        v-for="(item, index) in localTodoItem"
+        v-for="(item, index) in todoList"
         v-bind:key="item.content"
         v-bind:title="item.content"
       >
         <span class="item-content">
-          <span v-if="showNumber">
-              <input id="checkbox" type="checkbox" :value="item.content" v-model="item.isComplete">
-          </span>
-          <span v-else>
-            {{index+1}}
+          <span>
+              <input id="checkbox" type="checkbox" :value="item.content" v-model="item.isComplete" />
           </span>
           {{item.content}}
         </span>
         <button class="btn btn-warning" v-if="extentOption" v-on:click="itemDelete(index)"> 删除</button>
       </li>
+      <div :key="'empty'" v-if="todoList.length === 0" class="empty-list">
+        <slot> </slot>
+      </div>
+    </transition-group>
+
+<!--    <transition name="list">-->
+<!--      <div v-if="localTodoItem.length === 0" class="empty-list">-->
+<!--        <slot></slot>-->
+<!--      </div>-->
+<!--    </transition>-->
+
+
+
+
+    <h2 :key="'completed'">已完成</h2>
+
+    <transition-group name="list" tag="ul" class="list list-group">
+      <li
+        class="list-group-item"
+        v-for="(item, index) in completedItems"
+        v-bind:key="item.content"
+        v-bind:title="item.content"
+      >
+          <span class="item-content">
+                <span>{{index+1}}</span>
+                {{item.content}}
+          </span>
+      </li>
+      <div :key="'empty'" v-if="completedItems.length === 0" class="empty-list">
+        <slot> </slot>
+      </div>
     </transition-group>
 
 
@@ -37,14 +58,12 @@
 </template>
 
 <script>
+  import {mapActions, mapState} from 'vuex'
+
   export default {
-    name: "list",
+    name: 'list',
     inheritAttrs: false,
     props: {
-      todoItems: {
-        type: Array,
-        default: []
-      },
       extentOption: {
         type: Boolean,
         default: false
@@ -52,57 +71,51 @@
       showNumber: {
         type: Boolean,
         default: true
-      }
+      },
     },
     data: function () {
       return {
-        selected: []
+        selected: [],
       }
     },
     computed: {
-      localTodoItem: {
-        get() {
-          return this.todoItems.slice(0)
-        },
-        set(val) {
-
-        }
-      }
+      ...mapState(['todoList']),
+      ...mapState(['completedItems']),
     },
     watch: {
-      localTodoItem: {
+      todoList: {
         deep: true,
         handler: function (newVal) {
           this.selected = newVal.filter((item) => item.isComplete === true)
         }
       }
     },
-    created() {
-      this.selected = this.localTodoItem.filter((item) => item.isComplete === true)
+    created () {
+      this.selected = this.todoList.filter((item) => item.isComplete === true)
     },
     methods: {
+      ...mapActions(['RemoveTodoItem']),
       itemDelete: function (index) {
         if (index.length) {
           if (window.confirm(`确定完成了${(this.selected.length === 1 ? ('“' + this.selected[0].content + '”') : '') + '这 ' + this.selected.length} 项吗？`)) {
-            this.$emit("delete", index);
+              this.RemoveTodoItem(index)
+
           }
         } else {
-          if (window.confirm(`确定要删除 ${this.localTodoItem[index].content} 吗？`)) {
-            this.$emit("delete", index);
+          if (window.confirm(`确定要删除 ${this.todoList[index].content} 吗？`)) {
+              this.RemoveTodoItem(index)
+
           }
         }
 
       },
       itemClear: function () {
         if (window.confirm(`确定要清空所有事项吗？`)) {
-          this.$emit("delete", -1)
+          this.RemoveTodoItem(-1)
         }
       },
-      sortItems: function () {
-        this.localTodoItem = this.todoItems.sort(function (pre, next) {
-          return next.level - pre.level;
-        })
-      }
+
+
     },
   }
 </script>
@@ -143,8 +156,8 @@
     min-height: 100px;
     position: relative;
     top: 10px;
-    left: 0px;
-    padding: 0px;
+    left: 0;
+    padding: 0;
   }
 
   .list-enter-active {

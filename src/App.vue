@@ -5,7 +5,7 @@
         <div class="col-md-12 column">
           <div class="page-header">
             <h1>
-              Example page header <small>Subtext for header</small>
+               待办事项
             </h1>
           </div>
           <div class="row clearfix">
@@ -92,5 +92,8 @@
 
   .custom-appear-to-class {
     opacity: 1;
+  }
+  .nav li{
+    text-align: center;
   }
 </style>

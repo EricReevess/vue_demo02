@@ -5,21 +5,6 @@
     <div class="container-fluid search-users">
       <div class="row-fluid">
         <div class="row-fluid">
-          <div>
-            <ul class="nav nav-tabs">
-              <li>
-                <router-link to="/search-users/news">News</router-link>
-              </li>
-              <li >
-                <router-link to="/search-users/news-detail">Detail</router-link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <keep-alive>
-              <router-view></router-view>
-            </keep-alive>
-          </div>
           <Search @searchUsers="searchUsers"/>
         </div>
         <item-container :list-status="listStatus"/>
