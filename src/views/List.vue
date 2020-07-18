@@ -8,22 +8,23 @@
     </transition>
 
     <div v-if="localTodoItem.length !== 0 && extentOption">
-      <button @click="itemClear">清空</button>
-      <button @click="sortItems" disabled>排序</button>
-      <button @click="itemDelete(selected)" :disabled="selected.length === 0">已完成</button>
+      <button class="btn btn-danger" @click="itemClear">清空</button>
+      <button class="btn btn-info" @click="sortItems" disabled>排序</button>
+      <button class="btn btn-success" @click="itemDelete(selected)" :disabled="selected.length === 0">已完成</button>
     </div>
-    <transition-group name="list" tag="ul" class="list">
+    <transition-group name="list" tag="ul" class="list list-group">
       <li
+        class="list-group-item"
         v-for="(item, index) in localTodoItem"
         v-bind:key="item.content"
         v-bind:title="item.content"
       >
         <span class="item-content">
           <span v-if="showNumber">
-             {{index+1}} <input v-if="showNumber" type="checkbox" :value="item.content" v-model="item.isComplete">
+              <input id="checkbox" type="checkbox" :value="item.content" v-model="item.isComplete">
           </span>
           <span v-else>
-            *
+            {{index+1}}
           </span>
           {{item.content}}
         </span>
@@ -113,14 +114,9 @@
   }
 
   li {
-    width: 100%;
-    min-height: 30px;
-    list-style: none;
     display: flex;
     align-items: center;
-    padding-bottom: 5px;
-    margin-bottom: 5px;
-    border-bottom: 1px solid #8395a7;
+    box-sizing: border-box;
   }
 
   .item-content {

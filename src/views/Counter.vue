@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>点击了 {{$store.state.count}} 次，当前次数是{{evenOrOdd}}</p>
+    <p>点击了 {{count}} 次，当前次数是{{evenOrOdd}}</p>
     <button @click="handelDec">减少</button>
     <button @click="handelPlus">增加</button>
     <button @click="handelPlusIfEven">如果是偶数就增加</button>
@@ -9,16 +9,21 @@
 </template>
 
 <script>
+  import {mapState, mapActions, mapGetters} from 'vuex'
+
   export default {
     name: 'Counter',
     computed: {
-      evenOrOdd () {
+      ...mapState(['count']),
+      ...mapGetters(['evenOrOdd']),
+      /*evenOrOdd () {
         //再此处通知vuex调用函数，而非直接调用
         return this.$store.getters.evenOrOdd
-      }
+      }*/
     },
     methods: {
-      handelDec () {
+      ...mapActions(['handelDec','handelPlus','handelPlusIfEven','handelPlusAsync'])
+      /*handelDec () {
         this.$store.dispatch('handelDec')
       },
       handelPlus () {
@@ -29,7 +34,7 @@
       },
       handelPlusAsync () {
         this.$store.dispatch('handelPlusAsync')
-      },
+      },*/
     }
   }
 </script>
